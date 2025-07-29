@@ -1,0 +1,2 @@
+Questo script, basato sulle funzioni concesse dalle librerie di Pandas e Streamlit, consente una visualizzazione semplice ed intuitiva dei dati contenuti all'interno della piattaforma ASP ConTe Servizi Territoriali dell'Azienda Sanitaria Provinciale di Catania.
+Lo script richiede il drag & drop di uno sheet predisposto in determinata maniera (es. nomi campi colonne) - estratto mediante altro scritp di web scraping mediante le funzioni di Selenium e Beautiful Soup (bs4)
