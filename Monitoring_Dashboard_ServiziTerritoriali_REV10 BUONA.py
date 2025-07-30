@@ -144,7 +144,7 @@ if uploaded_file:
     st.write(f"1) Il dataset contiene **{len(df)}** records/istanze caricate in piattaforma dalla data del {datetime.now().strftime('%d/%m/%Y')}")
     st.write(f"2) La media giornaliera di istanze inserite in piattaforma è pari a: **{media_istanze_giorno:.2f}**")
     st.write(f"3) Il numero di istanze inserite da un delegato dell'assistito è pari a **{numero_delegati}** - percentuale del **{perc_delegati:.2f}%**")
-    st.write("4) Le colonne relative ai nominativi di assistiti e delegati sono attualmente nascoste")
+    
     # Colonne da nascondere
     colonne_da_nascondere = ['Assistito', 'Richiedente/delegato', 'Differenza giorni', 'Ind. ritardo lavorazione']
 
