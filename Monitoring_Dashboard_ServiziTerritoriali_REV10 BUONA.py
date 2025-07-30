@@ -139,10 +139,10 @@ if uploaded_file:
     giorni = (data_fine - data_inizio).days
     print(giorni)
 
-    perc_istanze_giorno = (len(df))/(giorni)
+    media_istanze_giorno = (len(df))/(giorni)
     st.subheader(f"Dataset importato con successo - dati aggiornati al {datetime.now().strftime('%d/%m/%Y')}")
     st.write(f"1) Il dataset contiene **{len(df)}** records/istanze caricate in piattaforma dalla data del {datetime.now().strftime('%d/%m/%Y')}")
-    st.write(f"2) La media giornaliera di istanze inserite in piattaforma è pari a: **{perc_istanze_giorno:.2f}**")
+    st.write(f"2) La media giornaliera di istanze inserite in piattaforma è pari a: **{media_istanze_giorno:.2f}**")
     st.write(f"3) Il numero di istanze inserite da un delegato dell'assistito è pari a **{numero_delegati}** - percentuale del **{perc_delegati:.2f}%**")
     st.write("4) Le colonne relative ai nominativi di assistiti e delegati sono attualmente nascoste")
     # Colonne da nascondere
@@ -188,9 +188,13 @@ if uploaded_file:
     pivot2.loc['Totale istanze per mese', 'maggio'] = sum_istanze_maggio = pivot2['maggio'].sum()
     pivot2.loc['Totale istanze per mese', 'giugno'] = sum_istanze_giugno = pivot2['giugno'].sum()
     pivot2.loc['Totale istanze per mese', 'luglio'] = sum_istanze_luglio = pivot2['luglio'].sum()
+
+    media_istanze_maggio = (sum_istanze_maggio)/20 #20: quantità giorni da 12 Maggio a 31 Maggio
+    media_istanze_giugno = (sum_istanze_giugno)/30
+    media_istanze_luglio = (sum_istanze_luglio)/31
+    
     #st.subheader("Tabella Pivot per Distretto - Ufficio - Mese")
     #st.dataframe(pivot2)
-
 
     # CREAZIONE DELLA TABELLA PIVOT 3 - CONTEGGI ISTANZE IN RITARDO DI LAVORAZIONE
 
@@ -348,6 +352,9 @@ if uploaded_file:
     # HEATMAP INTERATTIVA PLOTLY
     # -------------------------
     st.subheader("Heatmap interattiva")
+    st.caption(f"-Media giornaliera istanze caricate a maggio: {media_istanze_maggio:.2f}")
+    st.caption(f"-Media giornaliera istanze caricate a giugno: {media_istanze_giugno:.2f}")
+    st.caption(f"-Media giornaliera istanze caricate a luglio: {media_istanze_luglio:.2f}")
 
     if df_filtrato.empty:
         st.warning("Nessun dato disponibile con i filtri selezionati.")
@@ -357,7 +364,7 @@ if uploaded_file:
         x='Mese',
         y='Distretto - Ufficio',
         z='Numero Assistiti',
-        color_continuous_scale='YlGnBu',
+        color_continuous_scale='Sunset',
         text_auto=True,
         title="Numero di assistiti per Distretto-Ufficio e Mese",
         width=800, height=600
@@ -380,7 +387,7 @@ if uploaded_file:
 
         # Titolo più grande e margini corretti
         fig.update_layout(
-            title=dict(text="Heatmap: istanze mensili", font=dict(size=20)),
+            title=dict(text="Istanze mensili", font=dict(size=15)),
             margin=dict(l=120, r=40, t=80, b=80)
         )
     st.plotly_chart(fig, use_container_width=True)
