@@ -114,13 +114,7 @@ if uploaded_file:
     
     
     #Creazione colonne con indicatore: Ritardo lavorazione istanza
-    #giorni_scelti = int(input("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInserisci un valore intero, maggiore di 0, che funga da valore Delta per segnalare le lavorazioni di istanze attualmente in ritardo: "))
-    giorni_scelti = st.number_input(
-    "Inserisci un valore intero, maggiore di 0, che funga da valore Delta per segnalare le lavorazioni di istanze attualmente in ritardo:",
-    min_value=1,
-    step=1,
-    value=1  # valore di default
-    )
+    
 
     oggi = datetime.now()
     df['Differenza giorni'] = (oggi - df['Data']).dt.days
@@ -137,8 +131,15 @@ if uploaded_file:
     data_fine = datetime.today().date()
 
     giorni = (data_fine - data_inizio).days
-    print(giorni)
-
+    #print(giorni)
+    
+    #giorni_scelti = int(input("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInserisci un valore intero, maggiore di 0, che funga da valore Delta per segnalare le lavorazioni di istanze attualmente in ritardo: "))
+    giorni_scelti = st.number_input(
+    f"Inserisci un valore intero, maggiore di 0 e minore di {giorni}, che funga da valore Delta per segnalare le lavorazioni di istanze attualmente in ritardo:",
+    min_value=1,
+    step=1,
+    value=1  # valore di default
+    )
     media_istanze_giorno = (len(df))/(giorni)
     st.subheader(f"Dataset importato con successo - dati aggiornati al {datetime.now().strftime('%d/%m/%Y')}")
     st.write(f"1) Il dataset contiene **{len(df)}** records/istanze caricate in piattaforma dalla data del {datetime.now().strftime('%d/%m/%Y')}")
