@@ -113,18 +113,7 @@ if uploaded_file:
 
     
     
-    #Creazione colonne con indicatore: Ritardo lavorazione istanza
     
-
-    oggi = datetime.now()
-    df['Differenza giorni'] = (oggi - df['Data']).dt.days
-    #Condizione "IF" ma VETTORIALE per Pandas e datafeatures
-    df['Ind. ritardo lavorazione'] = ((df['Differenza giorni'] > giorni_scelti) & (df['Stato'] == 'IN ATTESA'))
-
-    df = df[['Data', 'Anno', 'Mese', 'Differenza giorni', 'Ind. ritardo lavorazione', 'Distretto', 'Assistito', 'Richiedente/delegato', 'Richiesta', 'Stato', 'Ufficio', 'Indicatore di incompetenza']]
-    if df['Data'].dtype == 'object':
-        df['Data'] = df['Data'].str[:-6]
-    perc_delegati = (numero_delegati/(len(df)))*100
 
     # Definisci le date
     data_inizio = datetime.strptime("2025-05-12", "%Y-%m-%d").date()
@@ -140,7 +129,21 @@ if uploaded_file:
     step=1,
     value=1  # valore di default
     )
+
+    #Creazione colonne con indicatore: Ritardo lavorazione istanza
+    
+
+    oggi = datetime.now()
+    df['Differenza giorni'] = (oggi - df['Data']).dt.days
+    #Condizione "IF" ma VETTORIALE per Pandas e datafeatures
+    df['Ind. ritardo lavorazione'] = ((df['Differenza giorni'] > giorni_scelti) & (df['Stato'] == 'IN ATTESA'))
+
+    df = df[['Data', 'Anno', 'Mese', 'Differenza giorni', 'Ind. ritardo lavorazione', 'Distretto', 'Assistito', 'Richiedente/delegato', 'Richiesta', 'Stato', 'Ufficio', 'Indicatore di incompetenza']]
+    if df['Data'].dtype == 'object':
+        df['Data'] = df['Data'].str[:-6]
+    perc_delegati = (numero_delegati/(len(df)))*100
     media_istanze_giorno = (len(df))/(giorni)
+    
     st.subheader(f"Dataset importato con successo - dati aggiornati al {datetime.now().strftime('%d/%m/%Y')}")
     st.write(f"1) Il dataset contiene **{len(df)}** records/istanze caricate in piattaforma dalla data del {datetime.now().strftime('%d/%m/%Y')}")
     st.write(f"2) La media giornaliera di istanze inserite in piattaforma è pari a: **{media_istanze_giorno:.2f}**")
