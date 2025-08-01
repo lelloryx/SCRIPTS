@@ -11,6 +11,41 @@ import seaborn as sns
 import plotly.express as px
 from datetime import datetime
 
+
+#LOGO ASP DI CATANIA E SERVIZI TERRITORIALI
+#st.image("C://Users//enrico.lello//Desktop//Extra - NAS//SCRIPTS//ASPConTe - Servizi Territoriali//logoServiziTerritoriali-scritta.png", caption="Copyright 2025 Enricuccio", use_container_width='True')
+
+# Crea 2 colonne: larga-larga    (1 = stretta) contenenti banner immagini .png
+col1, col2,  = st.columns([2, 2])
+'''
+# Mostra l'immagine nella colonna centrale
+with col2:
+    st.image(
+        "C://Users//enrico.lello//Desktop//Extra - NAS//SCRIPTS//ASPConTe - Servizi Territoriali//images//logoServiziTerritoriali-scritta.png",
+        caption="Copyright 2025 Enricuccio. All rights reserved.",
+        use_container_width='200'
+    )
+with col1:
+    st.image(
+        "C://Users//enrico.lello//Desktop//Extra - NAS//SCRIPTS//ASPConTe - Servizi Territoriali//images//Logo ASP CT.png",
+        caption="Copyright 2025 Enricuccio. All rights reserved.",
+        use_container_width='200'
+    )
+'''
+#PER STREAMLIT
+
+st.markdown(
+    """
+    <div style='text-align: center;'>
+        <img src='images//logoServiziTerritoriali-scritta.png' width='400'>
+        <p style='font-size:14px; color:gray;'>Copyright 2025 Enricuccio</p>
+    </div>
+    """,
+    #unsafe_allow_html=True
+#)
+
+
+
 st.title("ASP ConTe Servizi Territoriali - dashboards di monitoraggio e analisi dati")
 
 uploaded_file = st.file_uploader("Carica il file Excel", type=["xlsx"])
@@ -69,7 +104,6 @@ if uploaded_file:
     df['Richiesta'].replace("Gestione Medico di Base e Pediatra (Scelta/Revoca)", "SCELTA/REVOCA MMG E PLS", inplace=True)
     df['Richiesta'].replace("Richiesta ESENZIONE PER PATOLOGIA", "ESENZIONE PER PATOLOGIA", inplace=True)
     df['Richiesta'].replace("RICHIESTA EMISSIONE TESSERA SANITARIA", "EMISSIONE TESSERA SANITARIA", inplace=True)
-    #AGGIUNTI ALLA DATA DEL 22/07/2025
     df['Richiesta'].replace("BONUS SOCIALE PER DISAGIO FISICO PER LA FORNITURA DI ENERGIA ELETTRICA", "BONUS SOCIALE", inplace=True)
     df['Richiesta'].replace("Richiesta CELIACHIA", "CELIACHIA", inplace=True)
     df['Richiesta'].replace("Richiesta MALATTIE RARE (farmaci)", "MALATTIE RARE", inplace=True)
@@ -79,6 +113,7 @@ if uploaded_file:
     df['Richiesta'].replace("Richiesta VACUUM THERAPY", "VACUUM THERAPY", inplace=True)
     df['Richiesta'].replace("Richiesta SOSTITUTI DEL LATTE MATERNO (contributo fino a 400 euro , non oltre il SESTO mese di vita del neonato", "SOSTITUTO LATTE MATERNO", inplace=True)
     df['Richiesta'].replace("Richiesta PARRUCCA  (contributo euro 300)", "PARRUCCA", inplace=True)
+    df['Richiesta'].replace("Richiesta CELIACHIA - Richiesta PIN", "PIN - CELIACHIA", inplace=True)
 
 
     df['Stato'].replace("ANNULLATA DALL’UFFICIO", "ANNULLATA DA UFFICIO", inplace=True)
@@ -90,7 +125,7 @@ if uploaded_file:
         "VENTILATORI POLMONARI", "OSSIGENO LIQUIDO", "PROTESI MAMMARIE", "INTEGRATORI",
         "NUTRIZIONE ENTERALE", "NUTRIZIONE PARENTERALE", "NUTRIZIONE ENTERALE E PARENTERALE", "PROTESI ACUSTICHE", "CONCENTRATORI DI OSSIGENO", "BONUS SOCIALE", "CELIACHIA",
         "MALATTIE RARE", "INSUFFICIENZA RENALE CRONICA", "FENILCHETONURIA", "STOMIE", 
-        "TALASSEMIA", "VACUUM THERAPY", 'SOSTITUTO LATTE MATERNO'
+        "TALASSEMIA", "VACUUM THERAPY", 'SOSTITUTO LATTE MATERNO', 'PARRUCCA', 'PIN - CELIACHIA'
     ]
 
     richieste_anagrafe_assistiti = [
@@ -113,25 +148,14 @@ if uploaded_file:
 
     
     
-    
-
-    # Definisci le date
-    data_inizio = datetime.strptime("2025-05-12", "%Y-%m-%d").date()
-    data_fine = datetime.today().date()
-
-    giorni = (data_fine - data_inizio).days
-    #print(giorni)
-    
+    #Creazione colonne con indicatore: Ritardo lavorazione istanza
     #giorni_scelti = int(input("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInserisci un valore intero, maggiore di 0, che funga da valore Delta per segnalare le lavorazioni di istanze attualmente in ritardo: "))
     giorni_scelti = st.number_input(
-    f"Inserisci un valore intero, maggiore di 0 e minore di {giorni}, che funga da valore Delta per segnalare le lavorazioni di istanze attualmente in ritardo:",
+    "Inserisci un valore intero, maggiore di 0, che funga da valore Delta per segnalare le lavorazioni di istanze attualmente in ritardo:",
     min_value=1,
     step=1,
     value=1  # valore di default
     )
-
-    #Creazione colonne con indicatore: Ritardo lavorazione istanza
-    
 
     oggi = datetime.now()
     df['Differenza giorni'] = (oggi - df['Data']).dt.days
@@ -142,13 +166,20 @@ if uploaded_file:
     if df['Data'].dtype == 'object':
         df['Data'] = df['Data'].str[:-6]
     perc_delegati = (numero_delegati/(len(df)))*100
+
+    # Definisci le date
+    data_inizio = datetime.strptime("2025-05-12", "%Y-%m-%d").date()
+    data_fine = datetime.today().date()
+
+    giorni = (data_fine - data_inizio).days
+    #print(giorni)
+
     media_istanze_giorno = (len(df))/(giorni)
-    
     st.subheader(f"Dataset importato con successo - dati aggiornati al {datetime.now().strftime('%d/%m/%Y')}")
     st.write(f"1) Il dataset contiene **{len(df)}** records/istanze caricate in piattaforma dalla data del {datetime.now().strftime('%d/%m/%Y')}")
     st.write(f"2) La media giornaliera di istanze inserite in piattaforma è pari a: **{media_istanze_giorno:.2f}**")
     st.write(f"3) Il numero di istanze inserite da un delegato dell'assistito è pari a **{numero_delegati}** - percentuale del **{perc_delegati:.2f}%**")
-    
+    st.write("4) Le colonne relative ai nominativi di assistiti e delegati sono attualmente nascoste")
     # Colonne da nascondere
     colonne_da_nascondere = ['Assistito', 'Richiedente/delegato', 'Differenza giorni', 'Ind. ritardo lavorazione']
 
@@ -188,14 +219,17 @@ if uploaded_file:
 
     pivot2 = pd.pivot_table(df, values='Assistito', index=['Distretto', 'Ufficio'], columns='Mese', aggfunc='count')
     pivot2['Totale istanze per ufficio e distretto'] = pivot1.fillna(0).sum(axis=1)
-    pivot2 = pivot2[['maggio', 'giugno', 'luglio']]
+    pivot2 = pivot2[['maggio', 'giugno', 'luglio', 'agosto']]
     pivot2.loc['Totale istanze per mese', 'maggio'] = sum_istanze_maggio = pivot2['maggio'].sum()
     pivot2.loc['Totale istanze per mese', 'giugno'] = sum_istanze_giugno = pivot2['giugno'].sum()
     pivot2.loc['Totale istanze per mese', 'luglio'] = sum_istanze_luglio = pivot2['luglio'].sum()
+    pivot2.loc['Totale istanze per mese', 'agosto'] = sum_istanze_agosto = pivot2['agosto'].sum()
+
 
     media_istanze_maggio = (sum_istanze_maggio)/20 #20: quantità giorni da 12 Maggio a 31 Maggio
     media_istanze_giugno = (sum_istanze_giugno)/30
     media_istanze_luglio = (sum_istanze_luglio)/31
+    media_istanze_agosto = (sum_istanze_agosto)/31
     
     #st.subheader("Tabella Pivot per Distretto - Ufficio - Mese")
     #st.dataframe(pivot2)
@@ -203,10 +237,11 @@ if uploaded_file:
     # CREAZIONE DELLA TABELLA PIVOT 3 - CONTEGGI ISTANZE IN RITARDO DI LAVORAZIONE
 
     pivot3 = pd.pivot_table(df, values='Ind. ritardo lavorazione', index=['Distretto', 'Ufficio'], columns='Mese', aggfunc='sum')
-    pivot3 = pivot3[['maggio', 'giugno', 'luglio']]
+    pivot3 = pivot3[['maggio', 'giugno', 'luglio', 'agosto']]
     pivot3.loc['Totale lavorazioni in ritardo per mese', 'maggio'] = sum_lavorazioni_ritardo_istanze_maggio = pivot3['maggio'].sum()
     pivot3.loc['Totale lavorazioni in ritardo per mese', 'giugno'] = sum_lavorazioni_ritardo_istanze_giugno = pivot3['giugno'].sum()
     pivot3.loc['Totale lavorazioni in ritardo per mese', 'luglio'] = sum_lavorazioni_ritardo_istanze_luglio = pivot3['luglio'].sum()
+    pivot3.loc['Totale lavorazioni in ritardo per mese', 'agosto'] = sum_lavorazioni_ritardo_istanze_agosto = pivot3['agosto'].sum()
     #st.subheader(f"Tabella Pivot - Quantità di giorni di ritardo lavorazione istanze - sentinella numerica impostata a **{giorni_scelti}**(giorni) da utente")
     #st.dataframe(pivot3)
 
@@ -245,10 +280,14 @@ if uploaded_file:
     pivot4.loc['Totale per tipologia richiesta', 'ESENZIONE PER PATOLOGIA'] = sum_esenzionepatologia = pivot4['ESENZIONE PER PATOLOGIA'].sum()
     pivot4.loc['Totale per tipologia richiesta', 'SCELTA/REVOCA MMG E PLS'] = sum_sceltaMMGPLS = pivot4['SCELTA/REVOCA MMG E PLS'].sum()
     pivot4.loc['Totale per tipologia richiesta', 'EMISSIONE TESSERA SANITARIA'] = sum_tesserasanitaria = pivot4['EMISSIONE TESSERA SANITARIA'].sum()
+    pivot4.loc['Totale per tipologia richiesta', 'PARRUCCA'] = sum_parrucca = pivot4['PARRUCCA'].sum()
+    pivot4.loc['Totale per tipologia richiesta', 'PIN - CELIACHIA'] = sum_pinparrucca = pivot4['PIN - CELIACHIA'].sum()
 
     #st.subheader(f"Tabella Pivot - Quantità istanze per tipologia di richiesta")
     #st.dataframe(pivot4)
 
+    pivot5 = pd.pivot_table(df, values='Assistito', index=['Distretto', 'Ufficio', 'Stato', 'Mese'], columns='Richiesta', aggfunc='count')
+    
 
     pivot_df = pivot1.reset_index()
 
@@ -281,7 +320,7 @@ if uploaded_file:
     st.title("Dashboard principale")
 
     # Creazione dei tabs
-    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Dataset anonimizzato", "Dataset completo", "Pivot Ufficio - Distretto", "Pivot Distretto - Ufficio - Mese", "Pivot ritardo lavorazione", "Pivot - istanze tipologia", "Pivot percentuali lavorazione"])
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(["Dataset anonimizzato", "Dataset completo", "Pivot Ufficio - Distretto", "Pivot Distretto - Ufficio - Mese", "Pivot ritardo lavorazione", "Pivot - istanze tipologia", "Pivot percentuali lavorazione", "Tabella Pivot Distretto - Ufficio - Mese - Stato - Richiesta"])
 
     with tab1:
         st.subheader(f"Dataset anonimizzato - {datetime.now().strftime('%d/%m/%Y')}")
@@ -296,7 +335,7 @@ if uploaded_file:
         st.subheader("Tabella Pivot per Distretto - Ufficio - Mese")
         st.dataframe(pivot2)
     with tab5:
-        st.subheader("Tabella Pivot - Quantità di giorni di ritardo lavorazione istanze - sentinella numerica impostata a **{giorni_scelti}**(giorni) da utente")
+        st.subheader(f"Tabella Pivot - Quantità di giorni di ritardo lavorazione istanze - sentinella numerica impostata a **{giorni_scelti}**(giorni) da utente")
         st.dataframe(pivot3)
     with tab6:
         st.subheader("Tabella Pivot - Quantità istanze per tipologia di richiesta")
@@ -304,6 +343,10 @@ if uploaded_file:
     with tab7:
         st.subheader("Tabella - Indicatori percentuali di lavorazione istanze")
         st.dataframe(indicatori_df)
+    with tab8:
+        st.subheader("Tabella Pivot Distretto - Ufficio - Mese - Stato - Richiesta")
+        st.dataframe(pivot5)
+
     # -------------------------
     # CREAZIONE DELLA TABELLA PIVOT (se non è già fatta)
     # -------------------------
@@ -356,9 +399,10 @@ if uploaded_file:
     # HEATMAP INTERATTIVA PLOTLY
     # -------------------------
     st.subheader("Heatmap interattiva")
-    st.caption(f"-Media giornaliera istanze caricate a maggio: {media_istanze_maggio:.2f}")
-    st.caption(f"-Media giornaliera istanze caricate a giugno: {media_istanze_giugno:.2f}")
-    st.caption(f"-Media giornaliera istanze caricate a luglio: {media_istanze_luglio:.2f}")
+    st.caption(f"-Media giornaliera istanze caricate nel mese di maggio: {media_istanze_maggio:.2f}")
+    st.caption(f"-Media giornaliera istanze caricate nel mese di giugno: {media_istanze_giugno:.2f}")
+    st.caption(f"-Media giornaliera istanze caricate nel mese di luglio: {media_istanze_luglio:.2f}")
+    st.caption(f"-Media giornaliera istanze caricate nel mese di agosto: {media_istanze_agosto:.2f}")
 
     if df_filtrato.empty:
         st.warning("Nessun dato disponibile con i filtri selezionati.")
@@ -420,7 +464,7 @@ if uploaded_file:
         st.subheader("Andamento temporale interattivo delle richieste")
         fig2 = px.line(dati_giornalieri, x='Data', y='Assistito', markers=True,
                        title=f'Curva temporale - Presentazione istanze dal 12/05/2025 al {datetime.now().strftime('%d/%m/%Y')}',
-                       labels={'Assistito': 'Numero di assistiti'})
+                       labels={'Assistito': 'Istanze presentate'})
         fig2.add_scatter(x=picchi_settimanali['Data'], y=picchi_settimanali['Assistito'],
                          mode='lines+markers', name='Picchi settimanali',
                          line=dict(color='red', width=2), marker=dict(color='red', size=8))
